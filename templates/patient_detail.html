@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details - Clinical Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+        }
+        
+        .btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .form-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .data-list {
+            margin-top: 20px;
+        }
+        
+        .data-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .data-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .data-item p {
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message.bot {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="patientName">Patient Details</h1>
+            <a href="/" class="btn">← Back to Dashboard</a>
+        </div>
+        
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('documents')">📄 Documents</button>
+                <button class="tab" onclick="switchTab('vitals')">📊 Vitals</button>
+                <button class="tab" onclick="switchTab('family')">👨‍👩‍👧‍👦 Family History</button>
+                <button class="tab" onclick="switchTab('images')">🖼️ Images</button>
+                <button class="tab" onclick="switchTab('chatbot')">💬 Chatbot</button>
+            </div>
+            
+            <!-- Documents Tab -->
+            <div id="documents" class="tab-content active">
+                <div class="form-section">
+                    <h3>Upload Medical Document</h3>
+                    <form id="documentForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="documentFile">Select Document (PDF, TXT, Images)</label>
+                            <input type="file" id="documentFile" name="file" accept=".pdf,.txt,.png,.jpg,.jpeg" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="documentType">Document Type</label>
+                            <input type="text" id="documentType" name="document_type" placeholder="e.g., Lab Report, X-Ray Report" value="Medical Report">
+                        </div>
+                        <button type="submit" class="btn-primary">Upload & Parse Document</button>
+                    </form>
+                    <div id="documentMessage"></div>
+                </div>
+                <div class="data-list" id="documentsList">
+                    <p>Loading documents...</p>
+                </div>
+            </div>
+            
+            <!-- Vitals Tab -->
+            <div id="vitals" class="tab-content">
+                <div class="form-section">
+                    <h3>Record Vital Signs</h3>
+                    <form id="vitalsForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="temperature">Temperature (°C)</label>
+                                <input type="number" id="temperature" name="temperature" step="0.1" placeholder="36.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" name="weight" step="0.1" placeholder="70.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Height (cm)</label>
+                                <input type="number" id="height" name="height" step="0.1" placeholder="175.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="bpSystolic">Blood Pressure - Systolic (mmHg)</label>
+                                <input type="number" id="bpSystolic" name="blood_pressure_systolic" placeholder="120">
+                            </div>
+                            <div class="form-group">
+                                <label for="bpDiastolic">Blood Pressure - Diastolic (mmHg)</label>
+                                <input type="number" id="bpDiastolic" name="blood_pressure_diastolic" placeholder="80">
+                            </div>
+                            <div class="form-group">
+                                <label for="heartRate">Heart Rate (bpm)</label>
+                                <input type="number" id="heartRate" name="heart_rate" placeholder="72">
+                            </div>
+                            <div class="form-group">
+                                <label for="respiratoryRate">Respiratory Rate (per min)</label>
+                                <input type="number" id="respiratoryRate" name="respiratory_rate" placeholder="16">
+                            </div>
+                            <div class="form-group">
+                                <label for="oxygenSaturation">Oxygen Saturation (%)</label>
+                                <input type="number" id="oxygenSaturation" name="oxygen_saturation" step="0.1" placeholder="98.0">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">Record Vitals</button>
+                    </form>
+                    <div id="vitalsMessage"></div>
+                </div>
+                <div class="data-list" id="vitalsList">
+                    <p>Loading vitals...</p>
+                </div>
+            </div>
+            
+            <!-- Family History Tab -->
+            <div id="family" class="tab-content">
+                <div class="form-section">
+                    <h3>Add Family History</h3>
+                    <form id="familyHistoryForm">
+                        <div class="form-group">
+                            <label for="condition">Medical Condition *</label>
+                            <input type="text" id="condition" name="condition" required placeholder="e.g., Diabetes, Hypertension">
+                        </div>
+                        <div class="form-group">
+                            <label for="relation">Relation</label>
+                            <select id="relation" name="relation">
+                                <option value="">Select relation</option>
+                                <option value="Mother">Mother</option>
+                                <option value="Father">Father</option>
+                                <option value="Sister">Sister</option>
+                                <option value="Brother">Brother</option>
+                                <option value="Maternal Grandmother">Maternal Grandmother</option>
+                                <option value="Maternal Grandfather">Maternal Grandfather</option>
+                                <option value="Paternal Grandmother">Paternal Grandmother</option>
+                                <option value="Paternal Grandfather">Paternal Grandfather</option>
+                                <option value="Aunt">Aunt</option>
+                                <option value="Uncle">Uncle</option>
+                                <option value="Cousin">Cousin</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ageOfOnset">Age of Onset (years)</label>
+                            <input type="number" id="ageOfOnset" name="age_of_onset" placeholder="e.g., 45">
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Additional Notes</label>
+                            <textarea id="notes" name="notes" rows="3" placeholder="Any additional information..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Add Family History</button>
+                    </form>
+                    <div id="familyMessage"></div>
+                </div>
+                <div class="data-list" id="familyList">
+                    <p>Loading family history...</p>
+                </div>
+            </div>
+            
+            <!-- Images Tab -->
+            <div id="images" class="tab-content">
+                <div class="form-section">
+                    <h3>Upload Medical Image</h3>
+                    <form id="imageForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="imageFile">Select Image (PNG, JPG, JPEG, DICOM)</label>
+                            <input type="file" id="imageFile" name="file" accept=".png,.jpg,.jpeg,.dicom,.dcm" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageType">Image Type</label>
+                            <input type="text" id="imageType" name="image_type" placeholder="e.g., X-Ray, CT Scan, MRI" value="Medical Image">
+                        </div>
+                        <div class="form-group">
+                            <label for="imageDescription">Description</label>
+                            <textarea id="imageDescription" name="description" rows="3" placeholder="Describe the image..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Upload Image</button>
+                    </form>
+                    <div id="imageMessage"></div>
+                </div>
+                <div class="data-list" id="imagesList">
+                    <p>Loading images...</p>
+                </div>
+            </div>
+            
+            <!-- Chatbot Tab -->
+            <div id="chatbot" class="tab-content">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot">
+                            <strong>Medical Assistant:</strong> Hello! I'm your medical assistant. I have access to this patient's medical records including documents, vital signs, and family history. How can I help you today?
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Ask a question about the patient..." onkeypress="handleChatKeyPress(event)">
+                        <button class="btn-primary" onclick="sendChatMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api';
+        const patientId = {{ patient_id }};
+        let patientData = null;
+        
+        // Load patient data on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadPatientData();
+            loadTabData('documents');
+        });
+        
+        // Load patient basic info
+        async function loadPatientData() {
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}`);
+                patientData = await response.json();
+                document.getElementById('patientName').textContent = `${patientData.name} (${patientData.reference_number})`;
+            } catch (error) {
+                console.error('Error loading patient:', error);
+            }
+        }
+        
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            
+            // Load data for the tab
+            loadTabData(tabName);
+        }
+        
+        // Load data for specific tab
+        function loadTabData(tabName) {
+            switch(tabName) {
+                case 'documents':
+                    loadDocuments();
+                    break;
+                case 'vitals':
+                    loadVitals();
+                    break;
+                case 'family':
+                    loadFamilyHistory();
+                    break;
+                case 'images':
+                    loadImages();
+                    break;
+            }
+        }
+        
+        // Document form handler
+        document.getElementById('documentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/documents`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage('documentMessage', 'Document uploaded and parsed successfully!', 'success');
+                    e.target.reset();
+                    loadDocuments();
+                } else {
+                    showMessage('documentMessage', result.error || 'Error uploading document', 'error');
+                }
+            } catch (error) {
+                showMessage('documentMessage', 'Network error: ' + error.message, 'error');
+            }
+        });
+        
+        // Load documents
+        async function loadDocuments() {
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/documents`);
+                const documents = await response.json();
+                
+                const container = document.getElementById('documentsList');
+                
+                if (documents.length === 0) {
+                    container.innerHTML = '<p>No documents uploaded yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = documents.map(doc => `
+                    <div class="data-item">
+                        <h4>${doc.filename}</h4>
+                        <p><strong>Type:</strong> ${doc.document_type || 'N/A'}</p>
+                        <p><strong>Uploaded:</strong> ${new Date(doc.uploaded_at).toLocaleString()}</p>
+                        ${doc.parsed_text ? `<p><strong>Extracted Text:</strong> ${doc.parsed_text.substring(0, 200)}...</p>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('documentsList').innerHTML = 
+                    '<p class="message error">Error loading documents: ' + error.message + '</p>';
+            }
+        }
+        
+        // Vitals form handler
+        document.getElementById('vitalsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/vitals`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage('vitalsMessage', 'Vitals recorded successfully!', 'success');
+                    e.target.reset();
+                    loadVitals();
+                } else {
+                    showMessage('vitalsMessage', result.error || (result.errors ? result.errors.join(', ') : 'Error recording vitals'), 'error');
+                }
+            } catch (error) {
+                showMessage('vitalsMessage', 'Network error: ' + error.message, 'error');
+            }
+        });
+        
+        // Load vitals
+        async function loadVitals() {
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/vitals`);
+                const vitals = await response.json();
+                
+                const container = document.getElementById('vitalsList');
+                
+                if (vitals.length === 0) {
+                    container.innerHTML = '<p>No vitals recorded yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = vitals.map(vital => `
+                    <div class="data-item">
+                        <h4>Recorded: ${new Date(vital.recorded_at).toLocaleString()}</h4>
+                        ${vital.temperature ? `<p><strong>Temperature:</strong> ${vital.temperature}°C</p>` : ''}
+                        ${vital.weight ? `<p><strong>Weight:</strong> ${vital.weight} kg</p>` : ''}
+                        ${vital.height ? `<p><strong>Height:</strong> ${vital.height} cm</p>` : ''}
+                        ${vital.blood_pressure_systolic ? `<p><strong>Blood Pressure:</strong> ${vital.blood_pressure_systolic}/${vital.blood_pressure_diastolic || ''} mmHg</p>` : ''}
+                        ${vital.heart_rate ? `<p><strong>Heart Rate:</strong> ${vital.heart_rate} bpm</p>` : ''}
+                        ${vital.respiratory_rate ? `<p><strong>Respiratory Rate:</strong> ${vital.respiratory_rate} per min</p>` : ''}
+                        ${vital.oxygen_saturation ? `<p><strong>Oxygen Saturation:</strong> ${vital.oxygen_saturation}%</p>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('vitalsList').innerHTML = 
+                    '<p class="message error">Error loading vitals: ' + error.message + '</p>';
+            }
+        }
+        
+        // Family history form handler
+        document.getElementById('familyHistoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/family-history`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage('familyMessage', 'Family history added successfully!', 'success');
+                    e.target.reset();
+                    loadFamilyHistory();
+                } else {
+                    showMessage('familyMessage', result.error || (result.errors ? result.errors.join(', ') : 'Error adding family history'), 'error');
+                }
+            } catch (error) {
+                showMessage('familyMessage', 'Network error: ' + error.message, 'error');
+            }
+        });
+        
+        // Load family history
+        async function loadFamilyHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/family-history`);
+                const history = await response.json();
+                
+                const container = document.getElementById('familyList');
+                
+                if (history.length === 0) {
+                    container.innerHTML = '<p>No family history recorded yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = history.map(fh => `
+                    <div class="data-item">
+                        <h4>${fh.condition}</h4>
+                        ${fh.relation ? `<p><strong>Relation:</strong> ${fh.relation}</p>` : ''}
+                        ${fh.age_of_onset ? `<p><strong>Age of Onset:</strong> ${fh.age_of_onset} years</p>` : ''}
+                        ${fh.notes ? `<p><strong>Notes:</strong> ${fh.notes}</p>` : ''}
+                        <p><strong>Recorded:</strong> ${new Date(fh.recorded_at).toLocaleString()}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('familyList').innerHTML = 
+                    '<p class="message error">Error loading family history: ' + error.message + '</p>';
+            }
+        }
+        
+        // Image form handler
+        document.getElementById('imageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/images`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage('imageMessage', 'Image uploaded successfully!', 'success');
+                    e.target.reset();
+                    loadImages();
+                } else {
+                    showMessage('imageMessage', result.error || 'Error uploading image', 'error');
+                }
+            } catch (error) {
+                showMessage('imageMessage', 'Network error: ' + error.message, 'error');
+            }
+        });
+        
+        // Load images
+        async function loadImages() {
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/images`);
+                const images = await response.json();
+                
+                const container = document.getElementById('imagesList');
+                
+                if (images.length === 0) {
+                    container.innerHTML = '<p>No images uploaded yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = images.map(img => `
+                    <div class="data-item">
+                        <h4>${img.filename}</h4>
+                        <p><strong>Type:</strong> ${img.image_type || 'N/A'}</p>
+                        ${img.description ? `<p><strong>Description:</strong> ${img.description}</p>` : ''}
+                        <p><strong>Uploaded:</strong> ${new Date(img.uploaded_at).toLocaleString()}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('imagesList').innerHTML = 
+                    '<p class="message error">Error loading images: ' + error.message + '</p>';
+            }
+        }
+        
+        // Chatbot functions
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+        
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const question = input.value.trim();
+            
+            if (!question) return;
+            
+            // Add user message to chat
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML += `
+                <div class="message user">
+                    <strong>You:</strong> ${question}
+                </div>
+            `;
+            
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Get response from chatbot
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question })
+                });
+                
+                const result = await response.json();
+                
+                messagesContainer.innerHTML += `
+                    <div class="message bot">
+                        <strong>Medical Assistant:</strong> ${result.response}
+                    </div>
+                `;
+                
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } catch (error) {
+                messagesContainer.innerHTML += `
+                    <div class="message bot">
+                        <strong>Medical Assistant:</strong> Sorry, I encountered an error. Please try again.
+                    </div>
+                `;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+        
+        // Show message helper
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
+
