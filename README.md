@@ -47,6 +47,11 @@ A comprehensive clinical assistant system built with Python (Flask backend) and 
    - Metadata storage
    - Support for DICOM format
 
+6. **Teeth X-Ray Agent** 🦷
+   - Annotate individual teeth on an interactive dental chart
+   - Persist findings (root canal, cavity, both) per patient
+   - Share dental context with the chatbot agent
+
 ## Technology Stack
 
 - **Backend**: Python 3.8+, Flask
@@ -181,6 +186,10 @@ Medical System/
 ### Images
 - `POST /api/patients/<id>/images` - Upload image
 - `GET /api/patients/<id>/images` - Get all images
+
+### Dental (Teeth Agent)
+- `GET /api/patients/<id>/teeth` - Get saved tooth annotations
+- `POST /api/patients/<id>/teeth` - Create/Update/Delete a tooth annotation
 
 ### Chatbot
 - `POST /api/patients/<id>/chat` - Chat with medical assistant

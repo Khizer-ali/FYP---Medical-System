@@ -17,6 +17,7 @@ class Patient(db.Model):
     vitals = db.relationship('Vital', backref='patient', lazy=True, cascade='all, delete-orphan')
     family_history = db.relationship('FamilyHistory', backref='patient', lazy=True, cascade='all, delete-orphan')
     images = db.relationship('MedicalImage', backref='patient', lazy=True, cascade='all, delete-orphan')
+    dental_records = db.relationship('DentalAssessment', backref='patient', lazy=True, cascade='all, delete-orphan')
     
     def to_dict(self):
         return {
@@ -119,5 +120,26 @@ class MedicalImage(db.Model):
             'image_type': self.image_type,
             'description': self.description,
             'uploaded_at': self.uploaded_at.isoformat() if self.uploaded_at else None
+        }
+
+class DentalAssessment(db.Model):
+    __tablename__ = 'dental_assessments'
+    __table_args__ = (
+        db.UniqueConstraint('patient_id', 'tooth_id', name='uq_patient_tooth'),
+    )
+    
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id'), nullable=False)
+    tooth_id = db.Column(db.String(5), nullable=False)
+    condition = db.Column(db.String(20), nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'patient_id': self.patient_id,
+            'tooth_id': self.tooth_id,
+            'condition': self.condition,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
 

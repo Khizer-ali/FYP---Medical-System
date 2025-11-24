@@ -10,7 +10,7 @@ from datetime import datetime
 import uuid
 
 from config import Config
-from database import db, Patient, Document, Vital, FamilyHistory, MedicalImage
+from database import db, Patient, Document, Vital, FamilyHistory, MedicalImage, DentalAssessment
 from agents.master_agent import MasterAgent
 
 app = Flask(__name__)
@@ -247,6 +247,33 @@ def get_images(patient_id):
     """Get all images for a patient"""
     patient = Patient.query.get_or_404(patient_id)
     return jsonify([img.to_dict() for img in patient.images])
+
+# Teeth Agent Routes
+@app.route('/api/patients/<int:patient_id>/teeth', methods=['GET'])
+def get_teeth(patient_id):
+    """Get saved tooth conditions for a patient"""
+    patient = Patient.query.get_or_404(patient_id)
+    teeth_agent = master_agent.get_agent('teeth')
+    records = teeth_agent.get_teeth(patient_id, db.session)
+    return jsonify(records)
+
+@app.route('/api/patients/<int:patient_id>/teeth', methods=['POST'])
+def update_tooth(patient_id):
+    """Create, update, or delete a tooth condition"""
+    patient = Patient.query.get_or_404(patient_id)
+    data = request.get_json() or {}
+    
+    tooth_id = data.get('tooth_id')
+    condition = data.get('condition', '')
+    
+    if not tooth_id:
+        return jsonify({'error': 'tooth_id is required'}), 400
+    
+    teeth_agent = master_agent.get_agent('teeth')
+    result, status_code = teeth_agent.update_tooth_condition(
+        patient_id, tooth_id, condition, db.session
+    )
+    return jsonify(result), status_code
 
 # Serve uploaded files
 @app.route('/uploads/<path:filename>')

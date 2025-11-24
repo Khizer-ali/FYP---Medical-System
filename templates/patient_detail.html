@@ -245,6 +245,69 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        
+        .dental-board {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            overflow-x: auto;
+        }
+        
+        .dental-instructions {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .dental-legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .legend-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #333;
+        }
+        
+        .tooth {
+            fill: white;
+            stroke: black;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+        
+        .tooth:hover {
+            transform: scale(1.05);
+            stroke-width: 3;
+        }
+        
+        .root-canal {
+            fill: #007bff;
+        }
+        
+        .cavity {
+            fill: #000000;
+        }
+        
+        .both {
+            fill: url(#bothGradient);
+        }
     </style>
 </head>
 <body>
@@ -260,6 +323,7 @@
                 <button class="tab" onclick="switchTab('vitals')">📊 Vitals</button>
                 <button class="tab" onclick="switchTab('family')">👨‍👩‍👧‍👦 Family History</button>
                 <button class="tab" onclick="switchTab('images')">🖼️ Images</button>
+                <button class="tab" onclick="switchTab('dental')">🦷 Teeth X-Ray</button>
                 <button class="tab" onclick="switchTab('chatbot')">💬 Chatbot</button>
             </div>
             
@@ -403,6 +467,77 @@
                 </div>
             </div>
             
+            <!-- Dental Tab -->
+            <div id="dental" class="tab-content">
+                <div class="form-section">
+                    <h3>Teeth X-Ray Annotation</h3>
+                    <p class="dental-instructions">
+                        Click a tooth to mark <strong>root canal</strong>, <strong>cavity</strong>, or <strong>both</strong>. Leave the prompt blank to clear a tooth.
+                    </p>
+                    <div id="dentalMessage"></div>
+                    <div class="dental-legend">
+                        <div class="legend-item">
+                            <span class="legend-swatch" style="background:#007bff;"></span>
+                            Root canal
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-swatch" style="background:#000;"></span>
+                            Cavity
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-swatch" style="background:linear-gradient(180deg,#007bff 0%,#000 100%);"></span>
+                            Both
+                        </div>
+                    </div>
+                    <div class="dental-board">
+                        <svg width="1000" height="260">
+                            <defs>
+                                <linearGradient id="bothGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#007bff"/>
+                                    <stop offset="100%" stop-color="#000000"/>
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Upper teeth -->
+                            <path id="t1"  class="tooth" d="M20 100 L20 50 Q40 20 60 50 L60 100 Z" />
+                            <path id="t2"  class="tooth" d="M80 100 L80 50 Q100 20 120 50 L120 100 Z" />
+                            <path id="t3"  class="tooth" d="M140 100 L140 50 Q160 20 180 50 L180 100 Z" />
+                            <path id="t4"  class="tooth" d="M200 100 L200 50 Q220 20 240 50 L240 100 Z" />
+                            <path id="t5"  class="tooth" d="M260 100 L260 50 Q280 20 300 50 L300 100 Z" />
+                            <path id="t6"  class="tooth" d="M320 100 L320 50 Q340 20 360 50 L360 100 Z" />
+                            <path id="t7"  class="tooth" d="M380 100 L380 50 Q400 20 420 50 L420 100 Z" />
+                            <path id="t8"  class="tooth" d="M440 100 L440 50 Q460 20 480 50 L480 100 Z" />
+                            <path id="t9"  class="tooth" d="M500 100 L500 50 Q520 20 540 50 L540 100 Z" />
+                            <path id="t10" class="tooth" d="M560 100 L560 50 Q580 20 600 50 L600 100 Z" />
+                            <path id="t11" class="tooth" d="M620 100 L620 50 Q640 20 660 50 L660 100 Z" />
+                            <path id="t12" class="tooth" d="M680 100 L680 50 Q700 20 720 50 L720 100 Z" />
+                            <path id="t13" class="tooth" d="M740 100 L740 50 Q760 20 780 50 L780 100 Z" />
+                            <path id="t14" class="tooth" d="M800 100 L800 50 Q820 20 840 50 L840 100 Z" />
+                            <path id="t15" class="tooth" d="M860 100 L860 50 Q880 20 900 50 L900 100 Z" />
+                            <path id="t16" class="tooth" d="M920 100 L920 50 Q940 20 960 50 L960 100 Z" />
+                            
+                            <!-- Lower teeth -->
+                            <path id="t17" class="tooth" d="M20 160 L20 210 Q40 240 60 210 L60 160 Z" />
+                            <path id="t18" class="tooth" d="M80 160 L80 210 Q100 240 120 210 L120 160 Z" />
+                            <path id="t19" class="tooth" d="M140 160 L140 210 Q160 240 180 210 L180 160 Z" />
+                            <path id="t20" class="tooth" d="M200 160 L200 210 Q220 240 240 210 L240 160 Z" />
+                            <path id="t21" class="tooth" d="M260 160 L260 210 Q280 240 300 210 L300 160 Z" />
+                            <path id="t22" class="tooth" d="M320 160 L320 210 Q340 240 360 210 L360 160 Z" />
+                            <path id="t23" class="tooth" d="M380 160 L380 210 Q400 240 420 210 L420 160 Z" />
+                            <path id="t24" class="tooth" d="M440 160 L440 210 Q460 240 480 210 L480 160 Z" />
+                            <path id="t25" class="tooth" d="M500 160 L500 210 Q520 240 540 210 L540 160 Z" />
+                            <path id="t26" class="tooth" d="M560 160 L560 210 Q580 240 600 210 L600 160 Z" />
+                            <path id="t27" class="tooth" d="M620 160 L620 210 Q640 240 660 210 L660 160 Z" />
+                            <path id="t28" class="tooth" d="M680 160 L680 210 Q700 240 720 210 L720 160 Z" />
+                            <path id="t29" class="tooth" d="M740 160 L740 210 Q760 240 780 210 L780 160 Z" />
+                            <path id="t30" class="tooth" d="M800 160 L800 210 Q820 240 840 210 L840 160 Z" />
+                            <path id="t31" class="tooth" d="M860 160 L860 210 Q880 240 900 210 L900 160 Z" />
+                            <path id="t32" class="tooth" d="M920 160 L920 210 Q940 240 960 210 L960 160 Z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Chatbot Tab -->
             <div id="chatbot" class="tab-content">
                 <div class="chat-container">
@@ -428,6 +563,7 @@
         // Load patient data on page load
         window.addEventListener('DOMContentLoaded', async () => {
             await loadPatientData();
+            setupDentalBoard();
             loadTabData('documents');
         });
         
@@ -470,6 +606,9 @@
                     break;
                 case 'images':
                     loadImages();
+                    break;
+                case 'dental':
+                    loadDental();
                     break;
             }
         }
@@ -693,6 +832,87 @@
                 document.getElementById('imagesList').innerHTML = 
                     '<p class="message error">Error loading images: ' + error.message + '</p>';
             }
+        }
+        
+        // Dental board helpers
+        function setupDentalBoard() {
+            const teeth = document.querySelectorAll('#dental .tooth');
+            teeth.forEach(tooth => {
+                tooth.dataset.condition = '';
+                tooth.addEventListener('click', () => handleToothClick(tooth));
+            });
+        }
+        
+        function applyToothCondition(toothElement, condition) {
+            toothElement.classList.remove('root-canal', 'cavity', 'both');
+            toothElement.dataset.condition = condition || '';
+            
+            if (condition === 'root') {
+                toothElement.classList.add('root-canal');
+            } else if (condition === 'cavity') {
+                toothElement.classList.add('cavity');
+            } else if (condition === 'both') {
+                toothElement.classList.add('both');
+            }
+        }
+        
+        async function handleToothClick(toothElement) {
+            const current = toothElement.dataset.condition || '';
+            const input = prompt('Enter: root, cavity, or both (leave blank to clear)', current);
+            if (input === null) return;
+            
+            const condition = input.trim().toLowerCase();
+            const allowed = ['', 'root', 'cavity', 'both'];
+            if (!allowed.includes(condition)) {
+                showMessage('dentalMessage', 'Invalid condition. Use root, cavity, or both.', 'error');
+                return;
+            }
+            
+            applyToothCondition(toothElement, condition);
+            
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/teeth`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tooth_id: toothElement.id,
+                        condition: condition
+                    })
+                });
+                
+                const result = await response.json();
+                if (!response.ok) {
+                    showMessage('dentalMessage', result.error || 'Unable to save tooth data', 'error');
+                } else {
+                    const actionText = condition ? 'saved' : 'cleared';
+                    showMessage('dentalMessage', `Tooth ${toothElement.id.toUpperCase()} ${actionText}.`, 'success');
+                }
+            } catch (error) {
+                showMessage('dentalMessage', 'Network error: ' + error.message, 'error');
+            }
+        }
+        
+        async function loadDental() {
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}/teeth`);
+                const data = await response.json();
+                resetDentalBoard();
+                Object.entries(data).forEach(([toothId, condition]) => {
+                    const tooth = document.getElementById(toothId);
+                    if (tooth) {
+                        applyToothCondition(tooth, condition);
+                    }
+                });
+            } catch (error) {
+                showMessage('dentalMessage', 'Error loading dental data: ' + error.message, 'error');
+            }
+        }
+        
+        function resetDentalBoard() {
+            const teeth = document.querySelectorAll('#dental .tooth');
+            teeth.forEach(tooth => applyToothCondition(tooth, ''));
         }
         
         // Chatbot functions
